@@ -13,21 +13,19 @@ const Index = () => {
   const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>([]);
   const [monthlyExpenses, setMonthlyExpenses] = useState<MonthlyExpense[]>([]);
 
+  // Carrega dados salvos ao iniciar
   useEffect(() => {
     const savedFixed = localStorage.getItem("fixedExpenses");
     const savedMonthly = localStorage.getItem("monthlyExpenses");
-    
     if (savedFixed) setFixedExpenses(JSON.parse(savedFixed));
     if (savedMonthly) setMonthlyExpenses(JSON.parse(savedMonthly));
   }, []);
 
+  // Salva automaticamente quando mudar
   useEffect(() => {
     localStorage.setItem("fixedExpenses", JSON.stringify(fixedExpenses));
-  }, [fixedExpenses]);
-
-  useEffect(() => {
     localStorage.setItem("monthlyExpenses", JSON.stringify(monthlyExpenses));
-  }, [monthlyExpenses]);
+  }, [fixedExpenses, monthlyExpenses]);
 
   const addFixedExpense = (expense: Omit<FixedExpense, "id">) => {
     const newExpense = { ...expense, id: Date.now().toString() };

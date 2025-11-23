@@ -12,20 +12,13 @@ export const FinancialSummary = ({ fixedExpenses, monthlyExpenses }: FinancialSu
   const totalMonthly = monthlyExpenses.reduce((sum, exp) => sum + exp.amount, 0);
   const totalExpenses = totalFixed + totalMonthly;
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card className="p-6 bg-gradient-to-br from-destructive/5 to-destructive/10 border-destructive/20">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-1">Contas Fixas</p>
-            <p className="text-3xl font-bold text-destructive">{formatCurrency(totalFixed)}</p>
+            <p className="text-3xl font-bold text-destructive">R$ {totalFixed.toFixed(2)}</p>
           </div>
           <div className="bg-destructive/10 p-3 rounded-full">
             <TrendingDown className="w-6 h-6 text-destructive" />
@@ -38,7 +31,7 @@ export const FinancialSummary = ({ fixedExpenses, monthlyExpenses }: FinancialSu
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-1">Gastos Variáveis</p>
-            <p className="text-3xl font-bold text-warning">{formatCurrency(totalMonthly)}</p>
+            <p className="text-3xl font-bold text-warning">R$ {totalMonthly.toFixed(2)}</p>
           </div>
           <div className="bg-warning/10 p-3 rounded-full">
             <TrendingUp className="w-6 h-6 text-warning" />
@@ -51,7 +44,7 @@ export const FinancialSummary = ({ fixedExpenses, monthlyExpenses }: FinancialSu
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-1">Total do Mês</p>
-            <p className="text-3xl font-bold text-primary">{formatCurrency(totalExpenses)}</p>
+            <p className="text-3xl font-bold text-primary">R$ {totalExpenses.toFixed(2)}</p>
           </div>
           <div className="bg-primary/10 p-3 rounded-full">
             <Wallet className="w-6 h-6 text-primary" />

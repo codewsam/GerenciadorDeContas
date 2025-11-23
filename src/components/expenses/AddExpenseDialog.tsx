@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CATEGORIES, FixedExpense, MonthlyExpense } from "@/types/expenses";
-import { useToast } from "@/hooks/use-toast";
 
 interface AddExpenseDialogProps {
   type: "fixed" | "monthly";
@@ -33,49 +31,34 @@ export const AddExpenseDialog = ({ type, onAdd }: AddExpenseDialogProps) => {
   const [category, setCategory] = useState("");
   const [dueDay, setDueDay] = useState("");
   const [date, setDate] = useState("");
-  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validação simples
     if (!name || !amount || !category) {
-      toast({
-        title: "Erro",
-        description: "Preencha todos os campos obrigatórios",
-        variant: "destructive",
-      });
+      alert("Preencha todos os campos!");
       return;
     }
 
     if (type === "fixed" && !dueDay) {
-      toast({
-        title: "Erro",
-        description: "Informe o dia do vencimento",
-        variant: "destructive",
-      });
+      alert("Informe o dia do vencimento!");
       return;
     }
 
     if (type === "monthly" && !date) {
-      toast({
-        title: "Erro",
-        description: "Informe a data do gasto",
-        variant: "destructive",
-      });
+      alert("Informe a data do gasto!");
       return;
     }
 
+    // Cria a despesa
     const expense = type === "fixed"
       ? { name, amount: parseFloat(amount), category, dueDay: parseInt(dueDay) }
       : { name, amount: parseFloat(amount), category, date };
 
     onAdd(expense as any);
-    
-    toast({
-      title: "Sucesso!",
-      description: `${type === "fixed" ? "Conta fixa" : "Gasto"} adicionado com sucesso`,
-    });
 
+    // Limpa o formulário e fecha
     setName("");
     setAmount("");
     setCategory("");
@@ -97,9 +80,6 @@ export const AddExpenseDialog = ({ type, onAdd }: AddExpenseDialogProps) => {
           <DialogTitle>
             {type === "fixed" ? "Adicionar Conta Fixa" : "Adicionar Gasto"}
           </DialogTitle>
-          <DialogDescription>
-            Preencha as informações abaixo
-          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
