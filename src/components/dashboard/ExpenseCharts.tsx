@@ -21,6 +21,7 @@ const COLORS = [
 export const ExpenseCharts = ({ fixedExpenses, monthlyExpenses }: ExpenseChartsProps) => {
   const allExpenses = [...fixedExpenses, ...monthlyExpenses];
 
+  // Agrupa gastos por categoria
   const categoryData = allExpenses.reduce((acc, exp) => {
     const existing = acc.find(item => item.name === exp.category);
     if (existing) {
@@ -31,17 +32,11 @@ export const ExpenseCharts = ({ fixedExpenses, monthlyExpenses }: ExpenseChartsP
     return acc;
   }, [] as { name: string; value: number }[]);
 
+  // Separa fixas vs variáveis
   const typeData = [
     { name: "Contas Fixas", value: fixedExpenses.reduce((sum, exp) => sum + exp.amount, 0) },
     { name: "Gastos Variáveis", value: monthlyExpenses.reduce((sum, exp) => sum + exp.amount, 0) }
   ];
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
 
   if (allExpenses.length === 0) {
     return (
@@ -71,7 +66,7 @@ export const ExpenseCharts = ({ fixedExpenses, monthlyExpenses }: ExpenseChartsP
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+            <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
           </PieChart>
         </ResponsiveContainer>
       </Card>
@@ -83,7 +78,7 @@ export const ExpenseCharts = ({ fixedExpenses, monthlyExpenses }: ExpenseChartsP
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+            <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
             <Bar dataKey="value" fill="hsl(214, 95%, 36%)" />
           </BarChart>
         </ResponsiveContainer>
