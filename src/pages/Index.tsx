@@ -9,23 +9,34 @@ import { MonthlyExpensesList } from "@/components/expenses/MonthlyExpensesList";
 import { AddExpenseDialog } from "@/components/expenses/AddExpenseDialog";
 import { FixedExpense, MonthlyExpense } from "@/types/expenses";
 
+// Lê os dados salvos no navegador (localStorage)
+const loadSaved = <T,>(key: string): T[] => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? (JSON.parse(saved) as T[]) : [];
+  } catch {
+    return [];
+  }
+};
+
 const Index = () => {
-  const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>([]);
-  const [monthlyExpenses, setMonthlyExpenses] = useState<MonthlyExpense[]>([]);
+  // Já inicia o estado com o que estava salvo
+  const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>(() =>
+    loadSaved<FixedExpense>("fixedExpenses")
+  );
+  const [monthlyExpenses, setMonthlyExpenses] = useState<MonthlyExpense[]>(() =>
+    loadSaved<MonthlyExpense>("monthlyExpenses")
+  );
 
-  // Carrega dados salvos ao iniciar
-  useEffect(() => {
-    const savedFixed = localStorage.getItem("fixedExpenses");
-    const savedMonthly = localStorage.getItem("monthlyExpenses");
-    if (savedFixed) setFixedExpenses(JSON.parse(savedFixed));
-    if (savedMonthly) setMonthlyExpenses(JSON.parse(savedMonthly));
-  }, []);
-
-  // Salva automaticamente quando mudar
+  // Salva sempre que algo mudar
   useEffect(() => {
     localStorage.setItem("fixedExpenses", JSON.stringify(fixedExpenses));
+  }, [fixedExpenses]);
+
+  useEffect(() => {
     localStorage.setItem("monthlyExpenses", JSON.stringify(monthlyExpenses));
-  }, [fixedExpenses, monthlyExpenses]);
+  }, [monthlyExpenses]);
+
 
   const addFixedExpense = (expense: Omit<FixedExpense, "id">) => {
     const newExpense = { ...expense, id: Date.now().toString() };
